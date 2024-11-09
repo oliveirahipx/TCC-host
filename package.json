@@ -1,16 +1,21 @@
 {
-  "name": "site_escolar",
+  "name": "tcc",
   "version": "1.0.0",
-  "description": "Tcc site de noticias",
-  "main": "index.js",
+  "description": "TCC site escolar em node com ligação a banco de dados",
+  "main": "App.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "github.com/oliveirahipx/TCC-fn"
+  },
+  "author": "Miguel",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.21.1",
+    "mysql2": "^3.11.4",
     "nodemon": "^3.1.7"
   }
 }

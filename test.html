@@ -1,0 +1,55 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar</title>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>Escola XYZ</h1>
+            </div>
+            <div class="menu">
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/cadastro-aluno">Cadastro Aluno</a></li>
+                    <li><a href="/cadastro-professor">Cadastro Professor</a></li>
+                </ul>
+            </div>
+            <div class="user-status">
+                <!-- A imagem muda conforme o login -->
+                <img src="/images/logged-out-icon.png" alt="Status" id="status-icon">
+            </div>
+        </nav>
+    </header>
+
+    <!-- Corpo da Página (Notícias) -->
+    <main>
+        <section class="news-section">
+            <h2>Últimas Notícias da Escola</h2>
+            <div class="news-container">
+                <div class="news-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Notícia 1">
+                    <h3>Evento de Ciências</h3>
+                    <p>Descrição breve sobre o evento de ciências que acontecerá amanhã na escola...</p>
+                </div>
+                <div class="news-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Notícia 2">
+                    <h3>Festa Junina</h3>
+                    <p>Nosso tradicional evento de Festa Junina será realizado no final do mês...</p>
+                </div>
+                <div class="news-item">
+                    <img src="https://via.placeholder.com/300x200" alt="Notícia 3">
+                    <h3>Inscrições Abertas para o Ensino Médio</h3>
+                    <p>A escola está com inscrições abertas para novos alunos do Ensino Médio...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+</body>
+</html>
