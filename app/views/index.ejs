@@ -3,147 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
     <title>Portal Escolar</title>
     <style>
-        /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Adicionando o estilo para o menu lateral */
 
-        /* Corpo da página */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        /* Cabeçalho e Barra de Navegação */
-        header {
-            background-color: #4CAF50;
-            padding: 10px 20px;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar .logo h1 {
-            color: white;
-        }
-
-        .navbar .menu ul {
-            display: flex;
-            list-style: none;
-        }
-
-        .navbar .menu ul li {
-            margin: 0 15px;
-        }
-
-        .navbar .menu ul li a {
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .navbar .menu ul li a:hover {
-            color: #ffeb3b;
-        }
-
-        .navbar .user-status img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-        /* Corpo da página (Notícias) */
-        main {
-            padding: 20px;
-        }
-
-        .news-section h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .news-container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .news-item {
-            width: 30%;
-            background-color: white;
-            margin: 10px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .news-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .news-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .news-item h3 {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .news-item p {
-            padding: 10px;
-            color: #555;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .navbar .menu ul {
-                flex-direction: column;
-            }
-
-            .news-container {
-                flex-direction: column;
-            }
-
-            .news-item {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
+
     <!-- Cabeçalho -->
     <header>
         <nav class="navbar">
-            <div class="logo">
-                <h1>Escola XYZ</h1>
+            <div class="logo" onclick="toggleSidebar()">
+                <img src="/images/logo.webp" alt="Logo da Escola CEM 09" style="height: 50px;">
             </div>
             <div class="menu">
                 <ul>
                     <li><a href="/login">Login</a></li>
-                    <li><a href="/cadastro-aluno">Cadastro Aluno</a></li>
+                    <li><a href="/Cadastro_alunos">Cadastro Aluno</a></li>
                     <li><a href="/cadastro-professor">Cadastro Professor</a></li>
                 </ul>
             </div>
             <div class="user-status">
-                <!-- A imagem muda conforme o login -->
                 <img src="/images/logged-out-icon.png" alt="Status" id="status-icon">
             </div>
         </nav>
     </header>
+
+    <!-- Menu lateral -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">×</a>
+        <a href="/Cadastro_alunos">Cadastro</a>
+   
+    </div>
 
     <!-- Corpo da Página (Notícias) -->
     <main>
@@ -161,13 +54,33 @@
                     <p>pipipipopopo</p>
                 </div>
                 <div class="news-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Notícia 3">
+                    <img src="/images/Matriculas.webp" alt="Notícia 3">
                     <h3>Inscrições Abertas para o Ensino Médio</h3>
                     <p>pipipipopopo</p>
                 </div>
             </div>
         </section>
     </main>
-    
+
+    <script>
+        // Função para abrir o menu lateral
+        function toggleSidebar() {
+            const sidebar = document.getElementById("mySidebar");
+            const currentWidth = sidebar.style.width;
+            if (currentWidth === "250px") {
+                closeSidebar();
+            } else {
+                sidebar.style.width = "250px";  // Altera a largura da barra lateral para 250px
+                document.body.style.marginLeft = "250px";  // Desloca o conteúdo da página
+            }
+        }
+
+        // Função para fechar a barra lateral
+        function closeSidebar() {
+            document.getElementById("mySidebar").style.width = "0";  // Define a largura da barra lateral como 0
+            document.body.style.marginLeft = "0";  // Restaura o conteúdo da página para a posição original
+        }
+    </script>
+
 </body>
 </html>

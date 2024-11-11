@@ -1,7 +1,5 @@
-/* public/css/style.css */
-
-/* Reset básico */
-* {
+ /* Reset básico */
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -116,4 +114,74 @@ main {
     .news-item {
         width: 100%;
     }
+}
+/* Estilização da Logo */
+.logo img {
+    height: 60px; /* Ajusta a altura da logo */
+    width: auto; /* Mantém a proporção da imagem */
+    margin-right: 10px; /* Espaçamento à direita */
+    border-radius: 8px; /* Arredondamento das bordas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    transition: transform 0.3s ease; /* Transição suave para o efeito de hover */
+}
+
+/* Efeito ao passar o mouse sobre a logo */
+.logo img:hover {
+    transform: scale(1.1); /* Aumenta um pouco a logo */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Intensifica a sombra */
+}
+
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar .close-btn {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    font-size: 36px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Configuração para quando o menu lateral estiver aberto */
+.open-sidebar {
+    width: 250px;
+}
+
+/* Ajuste para o conteúdo da página */
+.main-content {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+/* Opções de responsividade */
+.menu {
+    position: relative;
+}
+
+.logo {
+    cursor: pointer;
 }
