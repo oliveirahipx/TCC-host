@@ -3,82 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/index.css">
     <title>Portal Escolar</title>
-    <style>
-        /* Adicionando o estilo para o menu lateral */
+    <link rel="stylesheet" href="/css/index.css">
 
-    </style>
 </head>
 <body>
 
-    <!-- Cabeçalho -->
     <header>
         <nav class="navbar">
-            <div class="logo" onclick="toggleSidebar()">
-                <img src="/images/logo.webp" alt="Logo da Escola CEM 09" style="height: 50px;">
+            <div class="logo">
+                <img src="/images/logo.webp" alt="Logo da Escola CEM 09">
             </div>
             <div class="menu">
-                <ul>
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/Cadastro_alunos">Cadastro Aluno</a></li>
-                    <li><a href="/cadastro-professor">Cadastro Professor</a></li>
-                </ul>
-            </div>
-            <div class="user-status">
-                <img src="/images/logged-out-icon.png" alt="Status" id="status-icon">
+                <span class="menu-toggle" onclick="openSidebar()">&#9776; Menu</span>
             </div>
         </nav>
     </header>
 
-    <!-- Menu lateral -->
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="close-btn" onclick="closeSidebar()">×</a>
-        <a href="/Cadastro_alunos">Cadastro</a>
-   
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <a href="javascript:void(0)" onclick="closeSidebar()">&#10005; Fechar</a>
+        <!-- links e verificação pra cargos -->
+        <% if (session && session.user) { %>
+            <a href="/perfil">Perfil</a>
+            
+            <% if (session.user.cargo === 'direcao') { %>
+                <a href="/admin">Administração</a>
+                <a href="/cadastro">Cadastrar Usuário</a>
+            <% } %>
+
+            <% if (session.user.cargo === 'professor') { %>
+                <a href="/professor">Gerenciar Notas</a>
+                <a href="/comentarios">Comentários</a>
+            <% } %>
+
+            <% if (session.user.cargo === 'aluno') { %>
+                <a href="/notas">Minhas Notas</a>
+                <a href="/eventos">Eventos</a>
+            <% } %>
+
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/Cadastro">Cadastro</a>
+        <% } %>
     </div>
 
-    <!-- Corpo da Página (Notícias) -->
     <main>
-        <section class="news-section">
-            <h2>Últimas Notícias da Escola</h2>
-            <div class="news-container">
-                <div class="news-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Notícia 1">
-                    <h3>Evento de Ciências</h3>
-                    <p>pipipipopopo</p>
-                </div>
-                <div class="news-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Notícia 2">
-                    <h3>Festa Junina</h3>
-                    <p>pipipipopopo</p>
-                </div>
-                <div class="news-item">
-                    <img src="/images/Matriculas.webp" alt="Notícia 3">
-                    <h3>Inscrições Abertas para o Ensino Médio</h3>
-                    <p>pipipipopopo</p>
-                </div>
+        <h1>Bem-vindo :D</h1>
+        <p>textinho para apresentação</p>
+
+        <!-- Seção de notícias -->
+        <div class="news-section">
+            <div class="news-item">
+                <h3>Notícia 1</h3>
+                <p>pipipipopopo</p>
             </div>
-        </section>
+            <div class="news-item">
+                <h3>Notícia 2</h3>
+                <p>pipipipopopo</p>
+            </div>
+            <div class="news-item">
+                <h3>Notícia 3</h3>
+                <p>pipipipopopo</p>
+            </div>
+        </div>
     </main>
 
     <script>
-        // Função para abrir o menu lateral
-        function toggleSidebar() {
-            const sidebar = document.getElementById("mySidebar");
-            const currentWidth = sidebar.style.width;
-            if (currentWidth === "250px") {
-                closeSidebar();
-            } else {
-                sidebar.style.width = "250px";  // Altera a largura da barra lateral para 250px
-                document.body.style.marginLeft = "250px";  // Desloca o conteúdo da página
-            }
+        function openSidebar() {
+            document.getElementById("sidebar").style.width = "250px";
         }
 
-        // Função para fechar a barra lateral
         function closeSidebar() {
-            document.getElementById("mySidebar").style.width = "0";  // Define a largura da barra lateral como 0
-            document.body.style.marginLeft = "0";  // Restaura o conteúdo da página para a posição original
+            document.getElementById("sidebar").style.width = "0";
         }
     </script>
 

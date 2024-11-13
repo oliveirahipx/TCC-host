@@ -1,187 +1,94 @@
- /* Reset básico */
- * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+        }
 
-/* Corpo da página */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-}
+        header {
+            background-color: #34495e;
+            padding: 10px 20px;
+        }
 
-/* Cabeçalho e Barra de Navegação */
-header {
-    background-color: #4CAF50;
-    padding: 10px 20px;
-}
+        .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .logo img:hover {
+            transform: scale(1.1);
+        }
 
-.navbar .logo h1 {
-    color: white;
-}
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.navbar .menu ul {
-    display: flex;
-    list-style: none;
-}
+        .menu-toggle {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ffffff;
+        }
 
-.navbar .menu ul li {
-    margin: 0 15px;
-}
+        /* Sidebar */
+        #sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #34495e;
+            overflow-x: hidden;
+            transition: width 0.5s ease;
+            padding-top: 60px;
+            color: #ffffff;
+            z-index: 1000;
+        }
 
-.navbar .menu ul li a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-}
+        #sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            color: #ffffff;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
 
-.navbar .menu ul li a:hover {
-    color: #ffeb3b;
-}
+        #sidebar a:hover {
+            background-color: #2c3e50;
+        }
 
-.navbar .user-status img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-}
+        /* Botão de fechar */
+        #sidebar a:first-child {
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-/* Corpo da página (Notícias) */
-main {
-    padding: 20px;
-}
+        /* Conteúdo principal */
+        main {
+            padding: 20px;
+            text-align: center;
+        }
 
-.news-section h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
+        /* Seção de notícias */
+        .news-section {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
-.news-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
+        .news-item {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 200px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
 
-.news-item {
-    width: 30%;
-    background-color: white;
-    margin: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-.news-item:hover {
-    transform: translateY(-10px);
-}
-
-.news-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.news-item h3 {
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-}
-
-.news-item p {
-    padding: 10px;
-    color: #555;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .navbar .menu ul {
-        flex-direction: column;
-    }
-
-    .news-container {
-        flex-direction: column;
-    }
-
-    .news-item {
-        width: 100%;
-    }
-}
-/* Estilização da Logo */
-.logo img {
-    height: 60px; /* Ajusta a altura da logo */
-    width: auto; /* Mantém a proporção da imagem */
-    margin-right: 10px; /* Espaçamento à direita */
-    border-radius: 8px; /* Arredondamento das bordas */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
-    transition: transform 0.3s ease; /* Transição suave para o efeito de hover */
-}
-
-/* Efeito ao passar o mouse sobre a logo */
-.logo img:hover {
-    transform: scale(1.1); /* Aumenta um pouco a logo */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Intensifica a sombra */
-}
-
-.sidebar {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-}
-
-.sidebar a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidebar a:hover {
-    color: #f1f1f1;
-}
-
-.sidebar .close-btn {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    font-size: 36px;
-    color: white;
-    cursor: pointer;
-}
-
-/* Configuração para quando o menu lateral estiver aberto */
-.open-sidebar {
-    width: 250px;
-}
-
-/* Ajuste para o conteúdo da página */
-.main-content {
-    transition: margin-left .5s;
-    padding: 16px;
-}
-
-/* Opções de responsividade */
-.menu {
-    position: relative;
-}
-
-.logo {
-    cursor: pointer;
-}
+        .news-item:hover {
+            transform: scale(1.05);
+        }
