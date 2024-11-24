@@ -37,7 +37,7 @@ module.exports = function (app, pool) {
                     cargo: user.cargo,
                 };
                 console.log('Login Efetuado');
-                return res.redirect('/index'); // Redireciona após login
+                return res.redirect('/'); // Redireciona após login
             } else {
                 return res.status(401).send('Usuário ou senha incorretos.');
             }
