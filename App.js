@@ -2,10 +2,6 @@ const app = require('./config/server');
 const pool = require('./config/db');  // Importando corretamente o db.js de config
 
 
-const rotaTurmas = require('./app/routes/Turmas');
-rotaTurmas(app, pool);
-
-
 const rotaAdministrar = require('./app/routes/adm');
 rotaAdministrar(app, pool);
 
