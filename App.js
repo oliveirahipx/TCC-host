@@ -5,7 +5,7 @@ const pool = require('./config/db');  // Importando corretamente o db.js de conf
 const rotaAdministrar = require('./app/routes/adm');
 rotaAdministrar(app, pool);
 
-const rotaIndex = require('./app/routes/index');
+const rotaIndex = require('./app/routes/');
 rotaIndex(app, pool);
 
 const rotaCadastro = require('./app/routes/Cadastro');
