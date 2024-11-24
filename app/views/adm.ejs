@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração - Portal Escolar</title>
+    <link rel="stylesheet" href="/css/adm.css">
+</head>
+<body>
+
+    <!-- Header e Navbar -->
+    <header class="header">
+        <h1>Administração do Portal Escolar</h1>
+        <div class="menu">
+            <a href="/logout">Sair</a>
+        </div>
+    </header>
+
+    <!-- Seção Principal de Administração -->
+    <main>
+        <section class="user-management">
+            <h2>Gestão de Usuários</h2>
+
+            <!-- Formulário para adicionar novo usuário -->
+            <form action="/admin/addUser" method="POST" class="user-form">
+                <h3>Adicionar Novo Usuário</h3>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+                
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+                
+                <label for="cargo">Cargo:</label>
+                <select id="cargo" name="cargo">
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
+                </select>
+                
+                <button type="submit">Adicionar Usuário</button>
+            </form>
+
+            <!-- Lista de usuários -->
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Ações</th>
+                        <th>Matérias</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.nome %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.cargo %></td>
+                            <td>
+                                <!-- Botões para editar e deletar usuário -->
+                                <form action="/adm/editar/<%= user.id %>" method="GET" class="action-form">
+                                    <button type="submit">Editar</button>
+                                </form>
+                                <form action="/admin/deleteUser/<%= user.id %>" method="POST" class="action-form">
+                                    <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</button>
+                                </form>
+                            </td>
+                            <td>
+                                <% if (user.cargo === 'professor') { %>
+                                    <% let professor = professoresComMaterias.find(p => p.id === user.id); %>
+                                    <% if (professor && professor.materias.length > 0) { %>
+                                        <ul>
+                                            <% professor.materias.forEach(materia => { %>
+                                                <li><%= materia.materia %></li> <!-- Exibe apenas as matérias -->
+                                            <% }) %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p>Sem matérias associadas</p> <!-- Caso não tenha matérias -->
+                                    <% } %>
+                                <% } else { %>
+                                    <p>N/A</p>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Modal de Edição (opcional) -->
+    <script>
+        function openEditModal(userId) {
+            const modal = document.getElementById(`editModal-${userId}`);
+            modal.style.display = 'block';
+        }
+
+        function closeEditModal(userId) {
+            const modal = document.getElementById(`editModal-${userId}`);
+            modal.style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="/css/Editar.css">
+</head>
+<body>
+    <h1>Editar Usuário</h1>
+    <form action="/adm/edit/<%= user.id %>" method="POST">
+        <!-- Campo para o nome -->
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" value="<%= user.nome %>" required>
+
+        <!-- Campo para o email -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<%= user.email %>" required>
+
+        <!-- Campo para o cargo -->
+        <label for="cargo">Cargo:</label>
+        <input type="text" id="cargo" name="cargo" value="<%= user.cargo %>" required>
+
+        <!-- Seletor para associar matérias (somente se o usuário for professor) -->
+        <% if (user.cargo === 'professor') { %>
+            <label for="materias">Matérias:</label>
+<select name="materias[]" id="materias" multiple required>
+    <% materias.forEach(function(materia) { %>
+        <option value="<%= materia.id %>" <%= user.materias && user.materias.includes(materia.id) ? 'selected' : '' %>><%= materia.nome %></option>
+    <% }) %>
+</select>
+        <% } %>
+
+        <!-- Botão de salvar -->
+        <button type="submit">Salvar</button>
+    </form>
+
+    <!-- Link de cancelar -->
+    <a href="/Administrar">Cancelar</a>
+</body>
+</html>

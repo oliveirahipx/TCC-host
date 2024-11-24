@@ -1,82 +1,61 @@
-const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 
-
-module.exports = function(app) {
-    const pool = mysql.createPool({
-        host: 'localhost',
-        user: 'root',
-        password: 'm084880',
-        database: 'Escola',
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0
-    });
-
-    try {
-        pool.query('SELECT * FROM Usuarios', (err, results) => {
-            if (err) {
-                console.error('Erro ao consultar o banco de dados: ', err.message);
-                return res.status(500).send('Erro ao consultar o banco de dados');
-            }
-
-        
-            console.log(results);
-
-        });
-    } catch (error) {
-        console.error('Erro no aplicativo: ', error);
-        res.status(500).send('Erro interno do servidor');
-    }
-
+module.exports = function (app, pool) {
     // Rota para exibir a página de login
-    app.get('/login', function(req, res) {
+    app.get('/login', (req, res) => {
         res.render('Login');
     });
 
     // Rota para logar o usuário
-    app.post('/Logar', function(req, res) {
+    app.post('/Logar', async (req, res) => {
         const { email, senha } = req.body;
 
+        // Verifica se os campos obrigatórios foram fornecidos
         if (!email || !senha) {
             return res.status(400).send('Todos os campos são obrigatórios');
         }
 
-        // Consulta para verificar o email e senha no banco de dados
-        pool.query('SELECT * FROM Usuarios WHERE email = ?', [email], async (err, results) => {
-            if (err) {
-                console.error('Erro ao consultar o banco de dados:', err.message);
-                return res.status(500).send('Erro ao consultar o banco de dados');
-            }
+        try {
+            // Consulta para buscar o usuário pelo e-mail
+            const query = 'SELECT * FROM Usuarios WHERE email = $1';
+            const result = await pool.query(query, [email]);
 
-            const user = results[0];
+            // Verifica se o usuário existe
+            const user = result.rows[0];
             if (!user) {
-                return res.send("Usuário ou senha incorretos.");
+                return res.status(401).send('Usuário ou senha incorretos.');
             }
 
-
-            const isPasswordValid = await (senha, user.senha);
+            // Verifica se a senha está correta
+            const isPasswordValid = await bcrypt.compare(senha, user.senha);
             if (isPasswordValid) {
-                req.session.user = user; // Salva o usuário na sessão 
+                // Salva o usuário na sessão
+                req.session.user = {
+                    id: user.id,
+                    nome: user.nome,
+                    email: user.email,
+                    cargo: user.cargo,
+                };
                 console.log('Login Efetuado');
-                return res.redirect('/index');
+                return res.redirect('/index'); // Redireciona após login
             } else {
-                res.send("Usuário ou senha incorretos.");
+                return res.status(401).send('Usuário ou senha incorretos.');
             }
-        });
+        } catch (error) {
+            console.error('Erro ao logar o usuário:', error.message);
+            return res.status(500).send('Erro interno ao processar o login');
+        }
     });
 
-    
+    // Rota para deslogar o usuário
+    app.get('/logout', (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).send('Erro ao finalizar sessão');
+            }
 
-    // Rota para exibir a página principal com a sessão
-    app.get('/index', function(req, res) {
-        res.render('index', { session: req.session });
-    });
-
-    // Rota para logout
-    app.get('/logout', function(req, res) {
-        req.session.destroy(() => {
-            res.redirect('/index'); // Redireciona para a página inicial
+            console.log('Logout Efetuado');
+            return res.redirect('/login'); // Redireciona para a página de login
         });
     });
 };

@@ -5,43 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Escolar</title>
     <link rel="stylesheet" href="/css/index.css">
-
 </head>
 <body>
-
     <header>
         <nav class="navbar">
-            <div class="logo">
+            <div class="logo" onclick="toggleLeftSidebar()">
                 <img src="/images/logo.webp" alt="Logo da Escola CEM 09">
             </div>
             <div class="menu">
-                <span class="menu-toggle" onclick="openSidebar()">&#9776; Menu</span>
+                <span class="menu-toggle" onclick="openRightSidebar()">&#9776; Menu</span>
             </div>
         </nav>
     </header>
 
-    <!-- Sidebar -->
-    <div id="sidebar">
-        <a href="javascript:void(0)" onclick="closeSidebar()">&#10005; Fechar</a>
-        <!-- links e verificação pra cargos -->
+    <!-- Right Sidebar -->
+    <div id="rightSidebar" class="sidebar">
+        <a href="javascript:void(0)" onclick="closeRightSidebar()">&#10005; Fechar</a>
         <% if (session && session.user) { %>
             <a href="/perfil">Perfil</a>
-            
             <% if (session.user.cargo === 'direcao') { %>
-                <a href="/admin">Administração</a>
+                <a href="/Administrar">Administração</a>
                 <a href="/cadastro">Cadastrar Usuário</a>
             <% } %>
-
             <% if (session.user.cargo === 'professor') { %>
                 <a href="/professor">Gerenciar Notas</a>
                 <a href="/comentarios">Comentários</a>
             <% } %>
-
             <% if (session.user.cargo === 'aluno') { %>
                 <a href="/notas">Minhas Notas</a>
                 <a href="/eventos">Eventos</a>
             <% } %>
-
             <a href="/logout">Logout</a>
         <% } else { %>
             <a href="/login">Login</a>
@@ -49,36 +42,64 @@
         <% } %>
     </div>
 
-    <main>
-        <h1>Bem-vindo :D</h1>
-        <p>textinho para apresentação</p>
+    <!-- Left Sidebar for News Quick View -->
+    <div id="leftSidebar" class="sidebar">
+        <a href="javascript:void(0)" onclick="closeLeftSidebar()">&#10005; Fechar</a>
+        <h3>Notícias Recentes</h3>
+        <div class="news-quick-view">
+            <a href="/noticia/1">Notícia 1</a>
+            <a href="/noticia/2">Notícia 2</a>
+            <a href="/noticia/3">Notícia 3</a>
+        </div>
+    </div>
 
-        <!-- Seção de notícias -->
+    <main>
+        <h1>Bem-vindo ao Portal Escolar</h1>
+        <p>Bem-vindo ao portal da nossa escola! Aqui você encontra as últimas notícias, eventos e informações importantes.</p>
+
+        <!-- Seção de notícias com imagens e descrições -->
         <div class="news-section">
             <div class="news-item">
-                <h3>Notícia 1</h3>
-                <p>pipipipopopo</p>
+                <a href="/noticia/1">
+                    <img src="/images/noticia1.jpg" alt="Notícia 1">
+                    <h3>Notícia 1</h3>
+                    <p>Descrição breve sobre a notícia 1...</p>
+                </a>
             </div>
             <div class="news-item">
-                <h3>Notícia 2</h3>
-                <p>pipipipopopo</p>
+                <a href="/noticia/2">
+                    <img src="/images/noticia2.jpg" alt="Notícia 2">
+                    <h3>Notícia 2</h3>
+                    <p>Descrição breve sobre a notícia 2...</p>
+                </a>
             </div>
             <div class="news-item">
-                <h3>Notícia 3</h3>
-                <p>pipipipopopo</p>
+                <a href="/noticia/3">
+                    <img src="/images/matriculas.webp" alt="Notícia 3">
+                    <h3>Notícia 3</h3>
+                    <p>Descrição breve sobre a notícia 3...</p>
+                </a>
             </div>
         </div>
     </main>
 
     <script>
-        function openSidebar() {
-            document.getElementById("sidebar").style.width = "250px";
+        function openRightSidebar() {
+            document.getElementById("rightSidebar").style.width = "250px";
         }
 
-        function closeSidebar() {
-            document.getElementById("sidebar").style.width = "0";
+        function closeRightSidebar() {
+            document.getElementById("rightSidebar").style.width = "0";
+        }
+
+        function toggleLeftSidebar() {
+            const leftSidebar = document.getElementById("leftSidebar");
+            leftSidebar.style.width = leftSidebar.style.width === "250px" ? "0" : "250px";
+        }
+
+        function closeLeftSidebar() {
+            document.getElementById("leftSidebar").style.width = "0";
         }
     </script>
-
 </body>
 </html>
