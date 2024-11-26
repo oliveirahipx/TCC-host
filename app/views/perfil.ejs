@@ -4,26 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuário</title>
-    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
-
     <div class="container">
         <div class="left">
             <!-- Exibe a imagem de perfil do usuário -->
             <img src="/uploads/<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img">
+            <!-- Formulário para upload de nova imagem de perfil -->
             <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="imagemPerfil" accept="image/*" required>
                 <button type="submit">Alterar Imagem</button>
             </form>
         </div>
-
+        
         <div class="right">
-            <h1>Perfil de <%= usuario.nome %></h1>
+            <h2>Informações do Usuário</h2>
+            <p><strong>Nome:</strong> <%= usuario.nome %></p>
             <p><strong>Email:</strong> <%= usuario.email %></p>
-            <p><strong>Imagem de Perfil:</strong> <img src="/uploads/<%= usuario.imagemPerfil %>" alt="Imagem de Perfil Atual" class="current-img"></p>
+            <p><strong>Data de Nascimento:</strong> <%= usuario.data_nascimento %></p>
+            <!-- Outros campos do usuário podem ser exibidos aqui -->
         </div>
     </div>
-
 </body>
 </html>

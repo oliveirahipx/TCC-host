@@ -3,7 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const app = express();
 const pool = require('./db');  // Importando corretamente o db.js de config
-const perfilRoutes = require("./routes/perfil");
+
 
 
 app.set('view engine', 'ejs');
