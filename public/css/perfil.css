@@ -1,0 +1,64 @@
+/* Resetando o estilo padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.left, .right {
+    width: 45%;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
+input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.right h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.right p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.current-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}

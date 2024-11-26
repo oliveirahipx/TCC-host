@@ -2,6 +2,10 @@ const app = require('./config/server');
 const pool = require('./config/db');  // Importando corretamente o db.js de config
 
 
+
+const rotaPerfil = require('./app/routes/perfil');
+rotaPerfil(app, pool);
+
 const rotaAdministrar = require('./app/routes/adm');
 rotaAdministrar(app, pool);
 
