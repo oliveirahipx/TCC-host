@@ -1,6 +1,4 @@
-const upload = require('../../config/multerConfig');
-
-
+const { upload, cloudinary } = require('../../config/multerConfig');
 
 module.exports = function(app, pool) {
     // Middleware para verificar autenticação
@@ -15,8 +13,6 @@ module.exports = function(app, pool) {
     // Rota para a página de perfil (verifica se o usuário está logado)
     app.get('/perfil', isAuthenticated, function(req, res) {
         const usuarioId = req.session.user.id; // Acessa o ID do usuário da sessão
-
-        console.log('ID do usuário na sessão:', usuarioId);  // Log para depuração
 
         pool.query('SELECT * FROM usuarios WHERE id = $1', [usuarioId], (err, result) => {
             if (err) {
@@ -40,16 +36,30 @@ module.exports = function(app, pool) {
     // Rota para upload de imagem de perfil
     app.post('/upload', isAuthenticated, upload.single('imagemPerfil'), (req, res) => {
         const usuarioId = req.session.user.id; // Acessa o ID do usuário da sessão
-        const imagemPerfil = req.file.filename; // O nome do arquivo da imagem
 
-        // Atualiza a imagem de perfil no banco de dados
-        pool.query('UPDATE usuarios SET imagemperfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err, result) => {
-            if (err) {
-                console.error('Erro ao atualizar a imagem de perfil:', err);
-                return res.status(500).send('Erro ao atualizar a imagem de perfil');
+        // Verifica se o arquivo foi enviado
+        if (!req.file) {
+            return res.status(400).send('Nenhuma imagem foi enviada');
+        }
+
+        // Fazendo upload da imagem para o Cloudinary
+        cloudinary.uploader.upload_stream({ folder: 'user_images' }, (error, result) => {
+            if (error) {
+                return res.status(500).send('Erro ao fazer upload da imagem para o Cloudinary');
             }
-            console.log('Imagem de perfil atualizada para:', imagemPerfil);
-            res.redirect('/perfil'); // Redireciona de volta para a página de perfil
-        });
+
+            // URL da imagem após o upload
+            const imagemPerfil = result.secure_url;
+
+            // Atualiza a imagem de perfil no banco de dados com a URL do Cloudinary
+            pool.query('UPDATE usuarios SET imagemPerfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err, result) => {
+                if (err) {
+                    console.error('Erro ao atualizar a imagem de perfil:', err);
+                    return res.status(500).send('Erro ao atualizar a imagem de perfil');
+                }
+                console.log('Imagem de perfil atualizada para:', imagemPerfil);
+                res.redirect('/perfil'); // Redireciona de volta para a página de perfil
+            });
+        }).end(req.file.buffer); // Envia o arquivo para o Cloudinary a partir do buffer
     });
 };

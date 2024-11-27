@@ -11,10 +11,10 @@
         <div class="left">
             <!-- Exibe a imagem de perfil do usuário ou uma imagem padrão -->
             <img 
-            src="/uploads/<%= usuario.imagemPerfil || 'default.jpg' %>?v=<%= Date.now() %>" 
+            src="<%= usuario.imagemPerfil || 'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg' %>" 
             alt="Imagem de Perfil" 
             class="profile-img">
-        
+          
             <!-- Formulário para upload de nova imagem de perfil -->
             <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="imagemPerfil" accept="image/*" required>

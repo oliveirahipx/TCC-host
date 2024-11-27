@@ -1,16 +1,16 @@
+const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
-const path = require('path');
-const uploadDirectory = path.join(__dirname, '../public/uploads');
-// Configuração do multer para o upload de imagens
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDirectory);
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nome único para a imagem
-    }
+
+// Configuração do Cloudinary com suas credenciais
+cloudinary.config({
+  cloud_name: 'duslicdkg',
+  api_key: '638174877423351',
+  api_secret: 'CwOBKADfl0mtRv26B2n5WE7X5Qs',
 });
+
+// Configuração do Multer para usar memoryStorage, já que a imagem vai para o Cloudinary
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
-module.exports = upload;  // Exporta o middleware 'upload'
+module.exports = { upload, cloudinary };
