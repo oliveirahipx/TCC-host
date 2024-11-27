@@ -3,96 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo</title>
+    <title>Painel de Administração - Portal Escolar</title>
     <link rel="stylesheet" href="/css/adm.css">
 </head>
 <body>
-    <!-- Cabeçalho -->
-    <header>
-        <nav class="navbar">
-            <div class="logo" onclick="toggleLeftSidebar()">
-                <!-- Exibe a imagem de perfil -->
-                <img src="<%= session.user.imagemPerfil || '/images/default-profile.png' %>" alt="Imagem de Perfil" class="profile-img">
-            </div>
-            <div class="menu">
-                <span class="menu-toggle" onclick="toggleRightSidebar()">&#9776; Menu</span>
-            </div>
-        </nav>
+
+    <!-- Header e Navbar -->
+    <header class="header">
+        <h1>Administração do Portal Escolar</h1>
+        <div class="menu">
+            <a href="/logout">Sair</a>
+            <a href="/">Voltar para pagina Principal/a>
+        </div>
     </header>
 
-    <!-- Sidebar Esquerda -->
-    <div id="leftSidebar" class="sidebar">
-        <a href="javascript:void(0)" onclick="closeLeftSidebar()">&#10005; Fechar</a>
-        <div class="profile-sidebar">
-            <img src="<%= session.user.imagemPerfil || '/images/default-profile.png' %>" alt="Imagem de Perfil" class="profile-img">
-            <h3><%= session.user.nome %></h3>
-            <p><strong>Cargo:</strong> <%= session.user.cargo %></p>
-        </div>
-    </div>
+    <!-- Seção Principal de Administração -->
+    <main>
+        <section class="user-management">
+            <h2>Gestão de Usuários</h2>
 
-    <!-- Sidebar Direita -->
-    <div id="rightSidebar" class="sidebar">
-        <a href="javascript:void(0)" onclick="closeRightSidebar()">&#10005; Fechar</a>
-        <% if (session && session.user) { %>
-            <a href="/perfil">Perfil</a>
-            <% if (session.user.cargo === 'direcao') { %>
-                <a href="/Administrar">Administração</a>
-                <a href="/cadastro">Cadastrar Usuário</a>
-            <% } %>
-            <a href="/logout">Logout</a>
-        <% } else { %>
-            <a href="/login">Login</a>
-            <a href="/Cadastro">Cadastro</a>
-        <% } %>
-    </div>
+            <!-- Formulário para adicionar novo usuário -->
+            <form action="/admin/addUser" method="POST" class="user-form">
+                <h3>Adicionar Novo Usuário</h3>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+                
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+                
+                <label for="cargo">Cargo:</label>
+                <select id="cargo" name="cargo">
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
+                </select>
+                
+                <button type="submit">Adicionar Usuário</button>
+            </form>
 
-    <!-- Conteúdo Principal -->
-    <div class="container">
-        <h1>Painel Administrativo</h1>
-        <p>Bem-vindo ao painel administrativo. Aqui você pode gerenciar usuários e acessar informações importantes.</p>
+            <!-- Lista de usuários -->
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Ações</th>
+                        <th>Matérias</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.nome %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.cargo %></td>
+                            <td>
+                                <!-- Botões para editar e deletar usuário -->
+                                <form action="/adm/editar/<%= user.id %>" method="GET" class="action-form">
+                                    <button type="submit">Editar</button>
+                                </form>
+                                <form action="/admin/deleteUser/<%= user.id %>" method="POST" class="action-form">
+                                    <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</button>
+                                </form>
+                            </td>
+                            <td>
+                                <% if (user.cargo === 'professor') { %>
+                                    <% let professor = professoresComMaterias.find(p => p.id === user.id); %>
+                                    <% if (professor && professor.materias.length > 0) { %>
+                                        <ul>
+                                            <% professor.materias.forEach(materia => { %>
+                                                <li><%= materia.materia %></li> <!-- Exibe apenas as matérias -->
+                                            <% }) %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p>Sem matérias associadas</p> <!-- Caso não tenha matérias -->
+                                    <% } %>
+                                <% } else { %>
+                                    <p>N/A</p>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-        <!-- Funcionalidades Administrativas -->
-        <div class="admin-options">
-            <div class="option">
-                <a href="/gerenciar-usuarios">
-                    <img src="/images/usuarios.png" alt="Gerenciar Usuários">
-                    <h3>Gerenciar Usuários</h3>
-                </a>
-            </div>
-            <div class="option">
-                <a href="/cadastrar-evento">
-                    <img src="/images/eventos.png" alt="Cadastrar Evento">
-                    <h3>Cadastrar Eventos</h3>
-                </a>
-            </div>
-            <div class="option">
-                <a href="/estatisticas">
-                    <img src="/images/estatisticas.png" alt="Estatísticas">
-                    <h3>Visualizar Estatísticas</h3>
-                </a>
-            </div>
-        </div>
-    </div>
-
+    <!-- Modal de Edição (opcional) -->
     <script>
-        // Funções para controlar as sidebars
-        function toggleLeftSidebar() {
-            const leftSidebar = document.getElementById("leftSidebar");
-            leftSidebar.style.width = leftSidebar.style.width === "250px" ? "0" : "250px";
+        function openEditModal(userId) {
+            const modal = document.getElementById(`editModal-${userId}`);
+            modal.style.display = 'block';
         }
 
-        function closeLeftSidebar() {
-            document.getElementById("leftSidebar").style.width = "0";
-        }
-
-        function toggleRightSidebar() {
-            const rightSidebar = document.getElementById("rightSidebar");
-            rightSidebar.style.width = rightSidebar.style.width === "250px" ? "0" : "250px";
-        }
-
-        function closeRightSidebar() {
-            document.getElementById("rightSidebar").style.width = "0";
+        function closeEditModal(userId) {
+            const modal = document.getElementById(`editModal-${userId}`);
+            modal.style.display = 'none';
         }
     </script>
+
 </body>
 </html>
