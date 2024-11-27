@@ -43,12 +43,12 @@ module.exports = function(app, pool) {
         const imagemPerfil = req.file.filename; // O nome do arquivo da imagem
 
         // Atualiza a imagem de perfil no banco de dados
-        pool.query('UPDATE usuarios SET imagemPerfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err, result) => {
+        pool.query('UPDATE usuarios SET imagemperfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err, result) => {
             if (err) {
                 console.error('Erro ao atualizar a imagem de perfil:', err);
                 return res.status(500).send('Erro ao atualizar a imagem de perfil');
             }
-
+            console.log('Imagem de perfil atualizada para:', imagemPerfil);
             res.redirect('/perfil'); // Redireciona de volta para a página de perfil
         });
     });

@@ -11,7 +11,7 @@ app.set('views', './app/views');
 app.set('public', './public');
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "uploads")));
+
 
 
 app.use(session({
