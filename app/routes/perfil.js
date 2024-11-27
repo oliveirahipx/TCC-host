@@ -26,8 +26,14 @@ module.exports = function(app, pool) {
             }
 
             const usuario = result.rows[0];
-            // Define 'default.jpg' se imagemPerfil for nulo
-            usuario.imagemPerfil = usuario.imagemPerfil || 'default.jpg';
+
+            // Atualizando `usuario.imagemPerfil` com o valor do banco
+            const imagemPerfilBanco = usuario.imagemperfil; // Certifique-se que o campo no banco está em minúsculas ou use `imagemPerfil`
+            usuario.imagemPerfil = imagemPerfilBanco 
+                ? imagemPerfilBanco 
+                : 'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg';
+
+            console.log('URL da imagem de perfil carregada do banco:', usuario.imagemPerfil);
 
             res.render('perfil', { usuario });
         });
@@ -45,6 +51,7 @@ module.exports = function(app, pool) {
         // Fazendo upload da imagem para o Cloudinary
         cloudinary.uploader.upload_stream({ folder: 'user_images' }, (error, result) => {
             if (error) {
+                console.error('Erro ao fazer upload da imagem para o Cloudinary:', error);
                 return res.status(500).send('Erro ao fazer upload da imagem para o Cloudinary');
             }
 
@@ -52,12 +59,17 @@ module.exports = function(app, pool) {
             const imagemPerfil = result.secure_url;
 
             // Atualiza a imagem de perfil no banco de dados com a URL do Cloudinary
-            pool.query('UPDATE usuarios SET imagemPerfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err, result) => {
+            pool.query('UPDATE usuarios SET imagemPerfil = $1 WHERE id = $2', [imagemPerfil, usuarioId], (err) => {
                 if (err) {
                     console.error('Erro ao atualizar a imagem de perfil:', err);
                     return res.status(500).send('Erro ao atualizar a imagem de perfil');
                 }
+
                 console.log('Imagem de perfil atualizada para:', imagemPerfil);
+
+                // Atualiza a sessão do usuário com a nova URL para evitar inconsistências
+                req.session.user.imagemPerfil = imagemPerfil;
+
                 res.redirect('/perfil'); // Redireciona de volta para a página de perfil
             });
         }).end(req.file.buffer); // Envia o arquivo para o Cloudinary a partir do buffer

@@ -9,11 +9,10 @@
 <body>
     <div class="container">
         <div class="left">
+            <%= console.log("url original" + usuario.imagemPerfil);%>
             <!-- Exibe a imagem de perfil do usuário ou uma imagem padrão -->
-            <img 
-            src="<%= usuario.imagemPerfil || 'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg' %>" 
-            alt="Imagem de Perfil" 
-            class="profile-img">
+            <img src="<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img">
+
           
             <!-- Formulário para upload de nova imagem de perfil -->
             <form action="/upload" method="POST" enctype="multipart/form-data">
