@@ -35,6 +35,7 @@ module.exports = function (app, pool) {
             res.render('adm', {
                 users,
                 professoresComMaterias,
+                session: req.session, // Envia os dados do usuário logado para o cabeçalho e sidebars
             });
         } catch (err) {
             console.error('Erro ao carregar a página de administração:', err.message);
@@ -73,13 +74,14 @@ module.exports = function (app, pool) {
                 user,
                 materias,
                 materiasAssociadas: materiasIdsAssociadas,
+                session: req.session, // Para exibição do cabeçalho e sidebars
             });
         } catch (err) {
             console.error('Erro ao carregar a página de edição:', err.message);
             res.status(500).send('Erro ao carregar a página de edição');
         }
     });
-
+    
     // Rota para salvar as edições de um usuário
     app.post('/adm/edit/:id', isAuthenticated, async (req, res) => {
         const { id } = req.params;

@@ -35,7 +35,10 @@ module.exports = function(app, pool) {
 
             console.log('URL da imagem de perfil carregada do banco:', usuario.imagemPerfil);
 
-            res.render('perfil', { usuario });
+            res.render('perfil', { 
+                usuario, 
+                session: req.session // Enviando a sessão para o EJS para uso nas sidebars
+            });
         });
     });
 

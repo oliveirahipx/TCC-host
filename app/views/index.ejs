@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo" onclick="toggleLeftSidebar()">
-                <img src="/images/logo.webp" alt="Logo da Escola CEM 09">
-            </div>
-            <div class="menu">
-                <span class="menu-toggle" onclick="openRightSidebar()">&#9776; Menu</span>
-            </div>
-        </nav>
-    </header>
+<header>
+    <nav class="navbar">
+        <div class="logo" onclick="toggleLeftSidebar()">
+            <img src="<%= session.user ? usuario.imagemPerfil : 'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg' %>" alt="Imagem de Perfil" class="profile-img">
+        </div>
+        <div class="menu">
+            <span class="menu-toggle" onclick="openRightSidebar()">&#9776; Menu</span>
+        </div>
+    </nav>
+</header>
 
     <!-- Right Sidebar -->
     <div id="rightSidebar" class="sidebar">
@@ -49,7 +49,7 @@
         <div class="news-quick-view">
             <a href="/noticia/1">Notícia 1</a>
             <a href="/noticia/2">Notícia 2</a>
-            <a href="/noticia/3">Notícia 3</a>
+            <a href="/noticia/3">Matriculas Abertas</a>
         </div>
     </div>
 
@@ -61,7 +61,7 @@
         <div class="news-section">
             <div class="news-item">
                 <a href="/noticia/1">
-                    <img src="https://res.cloudinary.com/duslicdkg/image/upload/v1732683523/user_images/uxywdy3itmlg9g4zj2uh.jpg" alt="Notícia 1">
+                    <img src="" alt="Notícia 1">
                     <h3>Notícia 1</h3>
                     <p>Descrição breve sobre a notícia 1...</p>
                 </a>
@@ -75,9 +75,9 @@
             </div>
             <div class="news-item">
                 <a href="/noticia/3">
-                    <img src="/images/matriculas.webp" alt="Notícia 3">
-                    <h3>Notícia 3</h3>
-                    <p>Descrição breve sobre a notícia 3...</p>
+                    <img src="https://res.cloudinary.com/duslicdkg/image/upload/v1732718779/Images/Matriculas_jfpi3c.webp" alt="Notícia 3">
+                    <h3>Matriculas abertas para 2025</h3>
+                    <p>O cem 09 está com matriculas abertas para 2025 confira:</p>
                 </a>
             </div>
         </div>

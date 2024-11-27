@@ -4,30 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuário</title>
-    <link rel="stylesheet" href="css/perfil.css">
+    <link rel="stylesheet" href="/css/perfil.css">
 </head>
 <body>
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="toggleLeftSidebar()">
+                <!-- Exibe a imagem de perfil se o usuário estiver logado -->
+                <img src="<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img">
+            </div>
+            <div class="menu">
+                <span class="menu-toggle" onclick="openRightSidebar()">&#9776; Menu</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Left Sidebar -->
+    <div id="leftSidebar" class="sidebar">
+        <a href="javascript:void(0)" onclick="closeLeftSidebar()">&#10005; Fechar</a>
+        <!-- Coloque aqui itens adicionais da barra lateral esquerda, se necessário -->
+        <a href="/perfil">Meu Perfil</a>
+        <a href="/">Voltar a pagina Principal/a>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div id="rightSidebar" class="sidebar">
+        <a href="javascript:void(0)" onclick="closeRightSidebar()">&#10005; Fechar</a>
+        <% if (session && session.user) { %>
+            <a href="/perfil">Perfil</a>
+            <% if (session.user.cargo === 'direcao') { %>
+                <a href="/Administrar">Administração</a>
+                <a href="/cadastro">Cadastrar Usuário</a>
+            <% } %>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/Cadastro">Cadastro</a>
+        <% } %>
+    </div>
+
     <div class="container">
         <div class="left">
-            <%= console.log("url original" + usuario.imagemPerfil);%>
-            <!-- Exibe a imagem de perfil do usuário ou uma imagem padrão -->
-            <img src="<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img">
-
-          
-            <!-- Formulário para upload de nova imagem de perfil -->
-            <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="imagemPerfil" accept="image/*" required>
-                <button type="submit">Alterar Imagem</button>
-            </form>
+            <!-- Exibe a imagem de perfil do usuário -->
+            <div class="profile-img-container" style="position: relative;">
+                <img src="<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img" id="perfil-img">
+                
+                <!-- Formulário de upload que só aparece ao passar o mouse -->
+                <div class="change-profile-pic" id="change-profile-pic">
+                    <p>Alterar Imagem de Perfil</p>
+                    <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="imagemPerfil" accept="image/*" required>
+                        <button type="submit">Alterar Imagem</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        
+
         <div class="right">
             <h2>Informações do Usuário</h2>
             <p><strong>Nome:</strong> <%= usuario.nome %></p>
             <p><strong>Email:</strong> <%= usuario.email %></p>
             <p><strong>Data de Nascimento:</strong> <%= usuario.data_nascimento %></p>
-            <!-- Outros campos do usuário podem ser exibidos aqui -->
+            <p><strong>Cargo:</strong> <%= usuario.cargo %></p>
+            
+            <!-- Botão para editar dados -->
+            <button id="editBtn">Editar Dados</button>
+            <div id="editForm" style="display:none;">
+                <form action="/editar-dados" method="POST">
+                    <label for="nome">Nome:</label>
+                    <input type="text" name="nome" value="<%= usuario.nome %>" required>
+                    
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" value="<%= usuario.email %>" required>
+                    
+                    <button type="submit">Salvar Alterações</button>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Função para abrir a barra lateral esquerda
+        function toggleLeftSidebar() {
+            const sidebar = document.getElementById('leftSidebar');
+            sidebar.style.width = sidebar.style.width === '250px' ? '0' : '250px';
+        }
+
+        // Função para abrir a barra lateral direita
+        function openRightSidebar() {
+            document.getElementById('rightSidebar').style.width = '250px';
+        }
+
+        // Função para fechar a barra lateral direita
+        function closeRightSidebar() {
+            document.getElementById('rightSidebar').style.width = '0';
+        }
+
+        // Função para fechar a barra lateral esquerda
+        function closeLeftSidebar() {
+            document.getElementById('leftSidebar').style.width = '0';
+        }
+
+        // Função para mostrar/ocultar o formulário de upload de imagem
+        const perfilImg = document.getElementById('perfil-img');
+        const changeProfilePic = document.getElementById('change-profile-pic');
+        
+        perfilImg.addEventListener('mouseenter', function() {
+            changeProfilePic.style.display = 'block';
+        });
+
+        perfilImg.addEventListener('mouseleave', function() {
+            changeProfilePic.style.display = 'none';
+        });
+
+        // Alternar o formulário de edição
+        const editBtn = document.getElementById('editBtn');
+        const editForm = document.getElementById('editForm');
+
+        editBtn.addEventListener('click', function() {
+            editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
 </body>
 </html>
