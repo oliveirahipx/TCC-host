@@ -31,11 +31,12 @@ module.exports = function (app, pool) {
             if (isPasswordValid) {
                 // Salva o usuário na sessão
                 req.session.user = {
-                    id: user.id,
+                    id: user.id, // Armazena o ID do usuário na sessão
                     nome: user.nome,
                     email: user.email,
                     cargo: user.cargo,
                 };
+
                 console.log('Login Efetuado');
                 return res.redirect('/'); // Redireciona após login
             } else {

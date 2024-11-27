@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuário</title>
-    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="css/perfil.css">
 </head>
 <body>
     <div class="container">
         <div class="left">
-            <!-- Exibe a imagem de perfil do usuário -->
-            <img src="/uploads/<%= usuario.imagemPerfil %>" alt="Imagem de Perfil" class="profile-img">
+            <!-- Exibe a imagem de perfil do usuário ou uma imagem padrão -->
+            <img 
+                src="/uploads/<%= usuario.imagemPerfil || 'default.jpg' %>" 
+                alt="Imagem de Perfil" 
+                class="profile-img">
             <!-- Formulário para upload de nova imagem de perfil -->
             <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="imagemPerfil" accept="image/*" required>
