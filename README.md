@@ -24,3 +24,4 @@ Eventos e Atividades: O sistema permite o agendamento de eventos escolares, como
 
 Sistema de Login e Autenticação: Controle de acesso baseado em roles (cargo) para garantir que os dados e funções sejam acessados apenas pelos usuários autorizados.
 
+acesse o link para executar: https://tcc-host.onrender.com
