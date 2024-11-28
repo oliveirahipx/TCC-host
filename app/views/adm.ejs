@@ -3,107 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Administração - Portal Escolar</title>
+    <title>Administração - Portal Escolar</title>
     <link rel="stylesheet" href="/css/adm.css">
 </head>
 <body>
-
-    <!-- Header e Navbar -->
-    <header class="header">
-        <h1>Administração do Portal Escolar</h1>
-        <div class="menu">
-            <a href="/logout">Sair</a>
-            <a href="/">Voltar para pagina Principal/a>
-        </div>
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="toggleLeftSidebar()">
+                <img src="<%= session.user ? usuario.imagemPerfil : 'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg' %>" alt="Imagem de Perfil" class="profile-img">
+            </div>
+            <div class="menu">
+                <span class="menu-toggle" onclick="openRightSidebar()">&#9776; Menu</span>
+    
+            </div>
+        </nav>
     </header>
 
-    <!-- Seção Principal de Administração -->
-    <main>
-        <section class="user-management">
-            <h2>Gestão de Usuários</h2>
+<!-- Right Sidebar -->
+<div id="rightSidebar" class="sidebar">
+    <a href="javascript:void(0)" onclick="closeRightSidebar()">&#10005; Fechar</a>
+    <h3>Notícias Recentes</h3>
+    <div class="news-quick-view">
+        <a href="/noticia/1">Notícia 1</a>
+        <a href="/noticia/2">Notícia 2</a>
+        <a href="/noticia/3">Matrículas Abertas</a>
+    </div>
+</div>
 
-            <!-- Formulário para adicionar novo usuário -->
-            <form action="/admin/addUser" method="POST" class="user-form">
-                <h3>Adicionar Novo Usuário</h3>
-                <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" required>
-                
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" required>
-                
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
-                
-                <label for="cargo">Cargo:</label>
-                <select id="cargo" name="cargo">
-                    <option value="aluno">Aluno</option>
-                    <option value="professor">Professor</option>
-                </select>
-                
-                <button type="submit">Adicionar Usuário</button>
-            </form>
+<!-- Left Sidebar -->
+<div id="leftSidebar" class="sidebar">
+    <a href="javascript:void(0)" onclick="closeLeftSidebar()">&#10005; Fechar</a>
+    <% if (session && session.user) { %>
+        <a href="/perfil">Perfil</a>
+        <% if (session.user.cargo === 'direcao') { %>
+            <a href="/Administrar">Administração</a>
+            <a href="/cadastro">Cadastrar Usuário</a>
+        <% } %>
+        <% if (session.user.cargo === 'professor') { %>
+            <a href="/notas">Gerenciar Notas</a>
+            <a href="/comentarios">Comentários</a>
+        <% } %>
+        <% if (session.user.cargo === 'aluno') { %>
+            <a href="/notas">Minhas Notas</a>
+            <a href="/eventos">Eventos</a>
+        <% } %>
+        <a href="/">Pagina inicial</a>
+        <a href="/logout">Logout</a>
+    <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/Cadastro">Cadastro</a>
+    <% } %>
+</div>
 
-            <!-- Lista de usuários -->
-            <table class="user-table">
-                <thead>
+<main>
+    <section class="user-management">
+        <h2>Gestão de Usuários</h2>
+
+        <!-- Formulário para adicionar novo usuário -->
+        <form action="/admin/addUser" method="POST" class="user-form">
+            <h3>Adicionar Novo Usuário</h3>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+            
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+            
+            <label for="cargo">Cargo:</label>
+            <select id="cargo" name="cargo">
+                <option value="aluno">Aluno</option>
+                <option value="professor">Professor</option>
+            </select>
+            
+            <button type="submit">Adicionar Usuário</button>
+        </form>
+
+        <!-- Lista de usuários -->
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Cargo</th>
+                    <th>Ações</th>
+                    <th>Matérias</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
                     <tr>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Cargo</th>
-                        <th>Ações</th>
-                        <th>Matérias</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    <% users.forEach(user => { %>
-                        <tr>
-                            <td><%= user.nome %></td>
-                            <td><%= user.email %></td>
-                            <td><%= user.cargo %></td>
-                            <td>
-                                <!-- Botões para editar e deletar usuário -->
-                                <form action="/adm/editar/<%= user.id %>" method="GET" class="action-form">
-                                    <button type="submit">Editar</button>
-                                </form>
-                                <form action="/admin/deleteUser/<%= user.id %>" method="POST" class="action-form">
-                                    <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</button>
-                                </form>
-                            </td>
-                            <td>
-                                <% if (user.cargo === 'professor') { %>
-                                    <% let professor = professoresComMaterias.find(p => p.id === user.id); %>
-                                    <% if (professor && professor.materias.length > 0) { %>
-                                        <ul>
-                                            <% professor.materias.forEach(materia => { %>
-                                                <li><%= materia.materia %></li> <!-- Exibe apenas as matérias -->
-                                            <% }) %>
-                                        </ul>
-                                    <% } else { %>
-                                        <p>Sem matérias associadas</p> <!-- Caso não tenha matérias -->
-                                    <% } %>
+                        <td><%= user.nome %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.cargo %></td>
+                        <td>
+                            <!-- Botões para editar e deletar usuário -->
+                            <form action="/adm/editar/<%= user.id %>" method="GET" class="action-form">
+                                <button type="submit">Editar</button>
+                            </form>
+                            <form action="/admin/deleteUser/<%= user.id %>" method="POST" class="action-form">
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</button>
+                            </form>
+                        </td>
+                        <td>
+                            <% if (user.cargo === 'professor') { %>
+                                <% let professor = professoresComMaterias.find(p => p.id === user.id); %>
+                                <% if (professor && professor.materias.length > 0) { %>
+                                    <ul>
+                                        <% professor.materias.forEach(materia => { %>
+                                            <li><%= materia.materia %></li>
+                                        <% }) %>
+                                    </ul>
                                 <% } else { %>
-                                    <p>N/A</p>
+                                    <p>Sem matérias associadas</p>
                                 <% } %>
-                            </td>
-                        </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        </section>
-    </main>
+                            <% } else { %>
+                                <p>N/A</p>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </section>
+</main>
 
-    <!-- Modal de Edição (opcional) -->
-    <script>
-        function openEditModal(userId) {
-            const modal = document.getElementById(`editModal-${userId}`);
-            modal.style.display = 'block';
-        }
+<script>
+    function openRightSidebar() {
+        const sidebar = document.getElementById("rightSidebar");
+        sidebar.classList.add("open");
+    }
 
-        function closeEditModal(userId) {
-            const modal = document.getElementById(`editModal-${userId}`);
-            modal.style.display = 'none';
-        }
-    </script>
+    function closeRightSidebar() {
+        const sidebar = document.getElementById("rightSidebar");
+        sidebar.classList.remove("open");
+    }
 
+    function toggleLeftSidebar() {
+        const leftSidebar = document.getElementById("leftSidebar");
+        leftSidebar.style.width = leftSidebar.style.width === "250px" ? "0" : "250px";
+    }
+
+    function closeLeftSidebar() {
+        document.getElementById("leftSidebar").style.width = "0";
+    }
+</script>
 </body>
 </html>

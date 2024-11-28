@@ -1,7 +1,8 @@
 const app = require('./config/server');
 const pool = require('./config/db');  // Importando corretamente o db.js de config
 
-
+const rotaNotas = require('./app/routes/notas');
+rotaNotas(app, pool);
 
 const rotaPerfil = require('./app/routes/perfil');
 rotaPerfil(app, pool);
@@ -18,6 +19,6 @@ rotaCadastro(app, pool);
 const rotaLogin = require('./app/routes/Login');
 rotaLogin(app, pool);
 
-app.listen(3000, function() {
+app.listen(3001, function() {
     console.log("Server ON");
 });

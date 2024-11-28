@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/notas.css">
+    <title>Notas</title>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Notas</h1>
+        <a href="/logout">Sair</a>
+    </header>
+
+    <main>
+        <% if (user.cargo === 'professor') { %>
+            <h2>Bem-vindo, Professor <%= user.nome %></h2>
+            <div class="container">
+                <aside>
+                    <h3>Suas Turmas</h3>
+                    <ul id="turmas-list">
+                        <% turmas.forEach(turma => { %>
+                            <li data-id="<%= turma.id %>"><%= turma.nome %></li>
+                        <% }); %>
+                    </ul>
+                </aside>
+                <section>
+                    <h3>Alunos da Turma</h3>
+                    <div id="alunos-container">
+                        <p>Selecione uma turma para visualizar os alunos.</p>
+                    </div>
+                </section>
+            </div>
+        <% } else if (user.cargo === 'aluno') { %>
+            <h2>Bem-vindo, <%= user.nome %></h2>
+            <div class="container">
+                <h3>Consultar Notas</h3>
+                <form id="consulta-notas-form">
+                    <label for="materia">Matéria:</label>
+                    <select id="materia" name="materia">
+                        <% materias.forEach(materia => { %>
+                            <option value="<%= materia.id %>"><%= materia.nome %></option>
+                        <% }); %>
+                    </select>
+                    <label for="bimestre">Bimestre:</label>
+                    <select id="bimestre" name="bimestre">
+                        <option value="1">1º Bimestre</option>
+                        <option value="2">2º Bimestre</option>
+                        <option value="3">3º Bimestre</option>
+                        <option value="4">4º Bimestre</option>
+                    </select>
+                    <button type="submit">Consultar</button>
+                </form>
+                <div id="resultado-notas"></div>
+            </div>
+        <% } %>
+    </main>
+
+    <!-- Inclua o arquivo JavaScript no final da página -->
+    <script src="/js/notasfront.js"></script>
+</body>
+</html>

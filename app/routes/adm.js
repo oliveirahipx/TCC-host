@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { upload, cloudinary } = require('../../config/multerConfig');
 
 module.exports = function (app, pool) {
     // Middleware para verificar autenticação
@@ -10,13 +11,31 @@ module.exports = function (app, pool) {
         }
     }
 
-    // Rota para a página de administração
+    // Rota para a página inicial da administração
     app.get('/Administrar', isAuthenticated, async (req, res) => {
         try {
-            // Busca todos os usuários
+            // Verifica se o usuário está logado e carrega informações de perfil
+            const usuarioId = req.session.user?.id;
+    
+            if (!usuarioId) {
+                return res.redirect('/login');
+            }
+    
+            // Busca o usuário logado
+            const { rows: usuarioRows } = await pool.query('SELECT * FROM Usuarios WHERE id = $1', [usuarioId]);
+            const usuario = usuarioRows[0];
+            if (!usuario) {
+                return res.status(404).send('Usuário não encontrado');
+            }
+    
+            // Define imagem de perfil padrão, caso não tenha
+            usuario.imagemPerfil = usuario.imagemperfil || 
+                'https://res.cloudinary.com/duslicdkg/image/upload/v1732682709/user_images/hvgfrnagncizszy4lu83.jpg';
+    
+            // Busca todos os usuários para a tabela
             const { rows: users } = await pool.query('SELECT * FROM Usuarios');
-
-            // Filtra os professores e busca suas matérias
+    
+            // Busca os professores e suas matérias
             const professores = users.filter((user) => user.cargo === 'professor');
             const professoresComMaterias = await Promise.all(
                 professores.map(async (professor) => {
@@ -30,35 +49,33 @@ module.exports = function (app, pool) {
                     return { ...professor, materias };
                 })
             );
-
+    
             // Renderiza a página de administração
             res.render('adm', {
+                session: req.session,
+                usuario,
                 users,
                 professoresComMaterias,
-                session: req.session, // Envia os dados do usuário logado para o cabeçalho e sidebars
             });
         } catch (err) {
             console.error('Erro ao carregar a página de administração:', err.message);
             res.status(500).send('Erro ao carregar a página de administração');
         }
     });
-
+    
     // Rota para editar um usuário
     app.get('/adm/editar/:id', isAuthenticated, async (req, res) => {
         const { id } = req.params;
 
         try {
-            // Busca o usuário pelo ID
             const { rows: userResult } = await pool.query('SELECT * FROM Usuarios WHERE id = $1', [id]);
             if (userResult.length === 0) {
                 return res.status(404).send('Usuário não encontrado');
             }
             const user = userResult[0];
 
-            // Busca todas as matérias disponíveis
             const { rows: materias } = await pool.query('SELECT * FROM Materias');
 
-            // Busca as matérias associadas ao professor
             const { rows: materiasAssociadas } = await pool.query(
                 `SELECT m.id AS materiaId 
                  FROM Professores_Materias pm 
@@ -69,20 +86,19 @@ module.exports = function (app, pool) {
 
             const materiasIdsAssociadas = materiasAssociadas.map((item) => item.materiaid);
 
-            // Renderiza a página de edição
             res.render('editar', {
                 user,
                 materias,
                 materiasAssociadas: materiasIdsAssociadas,
-                session: req.session, // Para exibição do cabeçalho e sidebars
+                session: req.session,
             });
         } catch (err) {
             console.error('Erro ao carregar a página de edição:', err.message);
             res.status(500).send('Erro ao carregar a página de edição');
         }
     });
-    
-    // Rota para salvar as edições de um usuário
+
+    // Rota para salvar edições de um usuário
     app.post('/adm/edit/:id', isAuthenticated, async (req, res) => {
         const { id } = req.params;
         const { nome, email, cargo, materias } = req.body;
@@ -92,17 +108,14 @@ module.exports = function (app, pool) {
         }
 
         try {
-            // Atualiza os dados do usuário
             await pool.query(
                 'UPDATE Usuarios SET nome = $1, email = $2, cargo = $3 WHERE id = $4',
                 [nome, email, cargo, id]
             );
 
             if (cargo === 'professor' && materias) {
-                // Remove as associações de matérias existentes
                 await pool.query('DELETE FROM Professores_Materias WHERE id_professor = $1', [id]);
 
-                // Insere as novas associações
                 if (Array.isArray(materias)) {
                     for (const materiaId of materias) {
                         await pool.query(
@@ -130,10 +143,8 @@ module.exports = function (app, pool) {
         }
 
         try {
-            // Criptografa a senha antes de armazenar
             const hashedPassword = await bcrypt.hash(senha, 10);
 
-            // Insere o novo usuário
             await pool.query(
                 'INSERT INTO Usuarios (nome, data_nascimento, email, senha, cargo) VALUES ($1, $2, $3, $4, $5)',
                 [nome, data_nascimento, email, hashedPassword, cargo]
@@ -159,5 +170,32 @@ module.exports = function (app, pool) {
             console.error('Erro ao excluir o usuário:', err.message);
             res.status(500).send('Erro ao excluir o usuário');
         }
+    });
+
+    // Rota para upload de imagem de perfil
+    app.post('/admin/upload/:id', isAuthenticated, upload.single('imagemPerfil'), (req, res) => {
+        const { id } = req.params;
+
+        if (!req.file) {
+            return res.status(400).send('Nenhuma imagem foi enviada');
+        }
+
+        cloudinary.uploader.upload_stream({ folder: 'user_images' }, async (error, result) => {
+            if (error) {
+                console.error('Erro ao fazer upload da imagem para o Cloudinary:', error);
+                return res.status(500).send('Erro ao fazer upload da imagem para o Cloudinary');
+            }
+
+            const imagemPerfil = result.secure_url;
+
+            try {
+                await pool.query('UPDATE Usuarios SET imagemPerfil = $1 WHERE id = $2', [imagemPerfil, id]);
+                console.log('Imagem de perfil atualizada com sucesso');
+                res.redirect('/adm/editar/' + id);
+            } catch (err) {
+                console.error('Erro ao atualizar a imagem de perfil no banco:', err.message);
+                res.status(500).send('Erro ao atualizar a imagem de perfil');
+            }
+        }).end(req.file.buffer);
     });
 };
